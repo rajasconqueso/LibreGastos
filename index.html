@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibreGastos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3b82f6">
+</head>
+
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center p-4">
+  <header class="w-full max-w-2xl mb-6">
+    <h1 class="text-3xl font-bold text-center text-blue-700">LibreGastos</h1>
+    <p class="text-center text-gray-600">Tu gestor de gastos simple, offline y privado</p>
+  </header>
+
+  <main class="w-full max-w-2xl space-y-6">
+    <!-- Formulario -->
+    <section class="bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-semibold mb-4">Agregar Movimiento</h2>
+      <form id="transaction-form" class="space-y-3">
+        <input type="text" id="description" placeholder="Descripción" required
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200" />
+        <input type="number" id="amount" placeholder="Cantidad" required
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200" />
+        <select id="type"
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200">
+          <option value="ingreso">Ingreso</option>
+          <option value="gasto">Gasto</option>
+        </select>
+        <button type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transform transition-all duration-200 hover:scale-105">
+          Agregar
+        </button>
+      </form>
+    </section>
+
+    <!-- Categoría -->
+    <section class="bg-white rounded-lg shadow-md p-4">
+      <label for="category" class="text-sm font-semibold mb-1 block">Categoría</label>
+      <select id="category"
+        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200">
+        <option value="general">General</option>
+          <option value="comida">Comida</option>
+          <option value="transporte">Transporte</option>
+          <option value="ocio">Ocio</option>
+          <option value="escuela">Escuela</option>
+          <option value="salud">Salud</option>
+          <option value="otros">Otros</option>
+        </select>
+    </section>
+
+    <!-- Filtros -->
+<section class="bg-white rounded-lg shadow-md p-4">
+  <h2 class="text-xl font-semibold mb-4">Filtros</h2>
+  <div class="flex flex-col md:flex-row gap-3">
+    <select id="filter-type" class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+      <option value="todos">Todos</option>
+      <option value="ingreso">Solo ingresos</option>
+      <option value="gasto">Solo gastos</option>
+    </select>
+    <input type="date" id="filter-date"
+      class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <select id="filter-category" class="p-2 border rounded-md">
+      <option value="todas">Todas las categorías</option>
+      <option value="general">General</option>
+      <option value="comida">Comida</option>
+      <option value="transporte">Transporte</option>
+      <option value="ocio">Ocio</option>
+      <option value="escuela">Escuela</option>
+      <option value="salud">Salud</option>
+      <option value="otros">Otros</option>
+    </select>
+    <button id="clear-filters"
+      class="bg-gray-300 hover:bg-gray-400 text-black font-semibold px-3 py-2 rounded transform transition-all duration-200 hover:scale-105">
+      Limpiar filtros
+    </button>
+  </div>
+</section>
+
+
+    <!-- Resumen -->
+    <section class="bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-semibold mb-4">Resumen</h2>
+      <p class="text-lg">Saldo actual: <span id="balance" class="font-bold text-green-600">$0.00</span></p>
+      <p class="text-sm text-gray-600">Ingresos: <span id="income" class="text-green-500 font-semibold">$0.00</span></p>
+      <p class="text-sm text-gray-600">Gastos:   <span id="expense" class="text-red-500   font-semibold">$0.00</span></p>
+    </section>
+
+    <!-- Resumen inteligente -->
+    <section class="bg-white p-4 rounded-lg shadow mt-6">
+      <h2 class="text-xl font-bold mb-4 text-indigo-600">Resumen inteligente</h2>
+      <ul id="smart-summary" class="text-gray-700 space-y-1 text-sm">
+        <li>📌 Categoría con más gasto: <span id="top-expense-cat" class="font-semibold text-red-600">-</span></li>
+        <li>📈 Categoría con más ingreso: <span id="top-income-cat" class="font-semibold text-green-600">-</span></li>
+        <li>📆 Día con más movimientos: <span id="busiest-day" class="font-semibold">-</span></li>
+        <li>💸 Promedio diario de gasto: <span id="avg-daily-expense" class="font-semibold">-</span></li>
+      </ul>
+    </section>
+
+    <!-- Historial -->
+    <section class="bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-semibold mb-4">Historial</h2>
+      <ul id="history" class="space-y-2"></ul>
+      <button id="clearHistory"
+        class="mt-2 bg-red-500 text-white px-3 py-1 rounded transform transition-all duration-200 hover:scale-105 hover:bg-red-600">
+        Eliminar historial
+      </button>
+    </section>
+
+    <!-- Exportar e Importar -->
+    <section class="bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-semibold mb-4">Exportar / Importar</h2>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button id="export-btn"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transform transition-all duration-200 hover:scale-105">
+          Exportar movimientos
+        </button>
+        <input type="file" id="import-file" accept=".json"
+          class="border px-4 py-2 rounded text-sm transition-all duration-200" />
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de confirmación -->
+  <div id="deleteModal" class="modal hidden">
+    <div class="modal-content transform transition-all duration-300 scale-95 opacity-0">
+      <p>¿Estás seguro de que deseas eliminar este movimiento?</p>
+      <div class="modal-buttons">
+        <button id="confirmDelete">Sí, eliminar</button>
+        <button id="cancelDelete">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('Service Worker registrado'))
+          .catch(err => console.error('Error SW:', err));
+      });
+    }
+  </script>
+
+</body>
+</html>
+
